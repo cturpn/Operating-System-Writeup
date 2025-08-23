@@ -1,0 +1,46 @@
+# Linux & Ricing Glossary
+AI generated, not double checked yet
+
+
+## Core Linux Terms
+
+TTY – Teletype terminal (console interface)
+PTTY – Pseudo terminal (virtual terminal emulation)
+VT – Virtual terminal (switchable terminal sessions, e.g., Ctrl+Alt+F2)
+Shell – Command interpreter (e.g., Bash, Zsh, Fish)
+WM – Window Manager (manages placement/behavior of windows; e.g., i3, bspwm)
+DE – Desktop Environment (full suite: WM + panels + apps, e.g., GNOME, KDE)
+DM – Display Manager (login/graphical session manager, e.g., GDM, LightDM)
+X11 – Old Linux display server protocol (X.Org implementation)
+Wayland – Modern replacement for X11 (more secure, simpler protocol)
+Compositor – Draws + blends windows (needed for transparency, shadows, etc.)
+Init – First process on boot (SysVinit, systemd, OpenRC)
+PkgMgr – Package Manager (e.g., pacman, apt, dnf)
+AUR – Arch User Repository (community PKGBUILDs for Arch)
+Dotfiles – User configuration files (e.g., .bashrc, .config/i3/config)
+$PATH – Environment variable telling shell where to look for executables
+
+## Ricing Terms
+
+Ricing – Customizing your Linux look & feel (term from “riced-up cars”)
+GTK – GIMP Toolkit (widget library used by GNOME apps)
+Qt – GUI framework (used by KDE apps)
+Icon Theme – Pack of icons (system-wide or app-specific)
+Cursor Theme – Custom mouse pointer styles
+Colorscheme – Palette used across editor, terminal, WM, etc.
+Nerd Fonts – Patched fonts with icons/glyphs for status bars and terminals
+Bar/Panel – Status bar/taskbar (e.g., polybar, lemonbar, waybar)
+Launcher – App runner menu (e.g., rofi, dmenu, wofi)
+Terminal Emulator – GUI program emulating a TTY (e.g., alacritty, kitty)
+Transparency/Picom – Window compositor effect for see-through backgrounds
+Wallpaper Daemon – Tool to set/manage wallpapers (e.g., feh, nitrogen)
+Theming Engine – Applies unified look (GTK theme, Kvantum for Qt)
+Hotkeys/Keybinds – Custom shortcuts defined in WM/terminal
+
+<!-- 
+Author: cturpn
+File: glossary.md
+Purpose: Glossary
+Created: 2025-08-22
+Edited: 2025-08-22
+-->
