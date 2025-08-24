@@ -1,9 +1,10 @@
-# Linux Architecture
-All things regarding the "basic" Linux Architecture.
+# Linux OS Components
+All things regarding the "basic" Linux OS Components.
 For more in-depth documentation check /components
 
 ## Components
-The components are the parts that work together and
+The components are the parts that work together and when combined are called operating system.
+Although there are multiple architectures that define how these components work together, the 5 listed components stay mainly the same. 
 
 First take a look at the following diagram:
 https://media.geeksforgeeks.org/wp-content/uploads/20230918130118/linux.jpg
@@ -17,7 +18,7 @@ It shows the components of the linux system, such as:
  -  Kernel
  -  Shell 
  -  Applications
- -  Utilities
+ -  System utilities
 
 ## Hardware
 The bottom-most layer consisting of the physical components like CPU, GPU, I/O devices, network interfaces and peripherals. 
@@ -29,7 +30,7 @@ Not much else regarding Hardware, except 1-2 Points regarding CPU/GPU choice:
     AMD works great out of the box, Nvidia requires you to install their proprietary drivers.
 
 ## Kernel
-The kernel is the core of the OS. While all components are important, the kernel allows them to do function.
+The kernel is the core of the OS. While all components are important, the kernel allows them to function.
 All components communicate in one way or another with the kernel:
 
 https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Kernel_Layout.svg/250px-Kernel_Layout.svg.png
@@ -54,8 +55,8 @@ Another important distinction is shell vs terminal:
 The shell is the software that interprets and executes commands, while the terminal is the window that hosts the shell and is often highly customizable.
 
 ## System Utility
-System Utilities are commandline tools that perform various tasks to make administration and system management easier. 
-Some distros come with preinstalled utilities, but the system is fully extensible, allowing the user to install additional tools.
+System utilities are commandline tools that perform various tasks to make administration and system management easier. 
+Most distros come with preinstalled system utilities, but the system is fully extensible, allowing the user to install additional tools.
 
 
 
