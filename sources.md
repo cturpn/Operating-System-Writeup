@@ -23,6 +23,13 @@ https://www.ibm.com/think/topics/linux-kernel
 https://www.geeksforgeeks.org/operating-systems/kernel-in-operating-system/
 https://www.geeksforgeeks.org/operating-systems/microkernel-in-operating-systems/
 https://www.aalpha.net/blog/microkernel-architecture/
+https://en.wikipedia.org/wiki/Microkernel#Servers
+https://www.geeksforgeeks.org/operating-systems/inter-process-communication-ipc/
+https://www2.cs.sfu.ca/CourseCentral/401/tiko/lecnotes/ch2.1.pdf
+https://refine.dev/blog/synchronous-vs-asynchronous/#example-ajax-requests-in-web-development-with-pseudocode
+https://en.wikipedia.org/wiki/Hybrid_kernel
+https://www.devx.com/terms/hybrid-kernel/
+https://nordvpn.com/cybersecurity/glossary/nano-kernel
 
 ## Sources Unix
 https://www.geeksforgeeks.org/linux-unix/linux-vs-unix/

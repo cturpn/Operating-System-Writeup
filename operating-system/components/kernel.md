@@ -16,7 +16,7 @@ Every type has its advantages and disadvantages that fit their specific usecase.
 
 Important to know, that there is a term "OS Architecture" which is often used interchangably with the kernel types. 
 Altough they are connected to each other(e.g a OS with a monolithic kernel, will also have a monolithic OS architecture), they dont exactly stand for the same thing.
-The OS architecture stands for the entire OS structure, while the kernel type for the kernel specifically.
+The OS architecture stands for the entire OS structure - while the kernel type for the kernel specifically.
 
 If you are interested in a overview of operating systems and the kernel they use, check this out:
 https://en.wikipedia.org/wiki/Comparison_of_operating_system_kernels
@@ -28,7 +28,7 @@ https://en.wikipedia.org/wiki/Monolithic_kernel#/media/File:OS-structure2.svg
 ### Monolithic 
 In a monolithic kernel, all core system services and functions run within a single, protected memory region called kernel space. 
 This memory is reserved and inaccessible to user-mode processes, ensuring system stability and security. 
-Within kernel space, a virtual interface to the hardware is established. This interface abstracts hardware-specific details—such as memory layouts, I/O registers, and device behavior—through kernel-resident drivers. 
+Within kernel space, a virtual interface to the hardware is established. This interface abstracts hardware-specific details — such as memory layouts, I/O registers, and device behavior—through kernel-resident drivers. 
 User-mode applications and processes interact with this interface via system calls, allowing them to perform operations on the hardware without accessing it directly. 
 
 Although the monolithic kernel is entirely running in the kernel space, it is designed in layers. 
@@ -48,13 +48,14 @@ These are arranged in a logical order, starting with the most fundamental operat
  - Changes on a single service can affect the entire system
 
 ### Microkernel
-The microkernel is a type of kernel that contains only the bare minimum of system services in its kernel space.
+The microkernel is a type of kernel that contains only the bare minimum of system services in its kernel space. 
+The goal of the microkernel is, to provide a core system that ensures vital functionalities and keep all non-vital components as modular as possible.
 Therefore only the most important system services make it into the kernel space, such as the inter-process communication(IPC), memory management and CPU-scheduling. This can vary depending on the type of system.
-All the other system services run in user-mode, which allows the user to directly interact with them and install, update or replace indiviual components without affecting the entire system.
-The core concept of the microkernel is to provide a core system that ensures vital functionalities and therefore keep all non-vital components as modular as possible.
-This design approach enables the system to be more stable and less prone to crashes, as a faulty or crashing system service will not crash any other services and
+All non-critical services are installed in the user space as isolated processes called "servers". This approach allows the user to directly interact with them and install, update or replace indiviual services without affecting the entire system.
+ 
+This design approach enables the system to be more stable and less prone to crashes, as a crashing/faulty server will not affect any other processes.
 
-The services,that are not part of the kernel space, communicate with each other via inter-process communication(IPC) and are in this context also called "servers"
+The servers communicate with each other via inter-process communication(IPC), specifically message passing. 
 Microkernel servers are essentially daemon programs like any others, except that the kernel grants some of them privileges to interact with parts of physical memory that are otherwise off limits to most programs. This allows some servers, particularly device drivers, to interact directly with hardware. 
 
 
@@ -71,9 +72,45 @@ Microkernel servers are essentially daemon programs like any others, except that
  - Including all services the microkernel architecture requires more code than a monolithic kernel
 
 ### Hybrid 
+This is, like the name suggests, the combination of both monolithic and microkernel. Its goal is to combine the efficiency and performance of the monolithic type with the microkernels modularity and stability.
+While this approach has many advantages, it also has compromises: 
+ - Security is not as high as in the microkernel, as most of the system services run in the kernel space. 
+ - Performance is not as good as a monolithic kernel, as there are still important services running in user space.
 
+Unlike monolithic and microkernels, there is no strict definition regarding which services run in kernel space versus user space. 
+The hybrid kernel is more like a spectrum in between monolithic and microkernel. This allows developers to customize their kernel to the point where it perfectly fits their needs.
+
+#### Advantages
+ - As there is no strict definition, the hybrid kernel allows for full customization by the developer to fit their system requirements
+ - Offers a middle ground between the two extremes
+
+
+#### Disadvantages
+ - While it combines the advantages of monolithic and microkernels, it does so at reduced effectiveness
+ - Implementing advantages from either type of kernel inevitably brings corresponding disadvantages
+ - Hybrid kernels are very complex in their design and implementation, and therefore require more knowledge to develop and maintain them
+
+### Nanokernel
+Today, the microkernel and nanokernel are often used interchangeably, since both aim to minimize what runs in the kernel space.
+Historically, however, the nanokernel referred to a even more extreme version of the microkernel, keeping only the most critical services(like interrupt handling and context switching) in the kernel space. 
 
 ### Exokernel
+The exokernel pushes the boundaries of minimalism, allowing applications direct access to the hardware resources such as CPU, memory and I/O devices. 
+https://upload.wikimedia.org/wikipedia/commons/f/f2/Exokernel_revised%28english%29.png
+
+Exokernels are tiny in size, since functionality is reduced to allocating and multiplexing hardware resources - managing when and how an application accesses CPU, memory and I/O devices.
+The kernel only ensures that the requested resource is free, and the application is allowed to access it.
+
+The exokernel forces a minimal amount of abstractions on the application developer.
+The kernel-provided abstractions are called library operating systems (LibOS). They request specific memory addresses, disk blocks, etc.
+Unlike traditional kernel types, which enforce strict abstraction interfaces(Like System Call Interface), the exokernels library operating system allows application-specific custom abstractions. 
+This approach makes exokernels very flexible and modular, while keeping performance up. It allows applications to handle these resources with greater precision/efficiency and requires less work from the kernel. 
+On the contrary it also shifts responsibility(especially security) and complexity to the developer. 
+If this responsibility is not taken seriously, it turns the exposure of hardware resources into an inherent security risk. 
+This is due to the reduced amount of abstractions forced onto the applications and less isolation layers to go through, making it easier for bugs and malicious behavior to cause damage to the system. 
+
+
+
 
 ## User Mode vs Kernel Mode
 To fully understand the aforementioned advantages and disadvantages of the different kernel types it is important to know the two key states in a operating system. 
@@ -150,6 +187,24 @@ While the kernel mode is intended to be temporary and controlled; vulnerabilitie
 ## Resource Management
 
 ## Memory Allocation / Management
+
+## Inter-Process Communication(IPC)
+Inter-process communication, from now on IPC describes a mechanism that allows seperate processes to communicate with each other by sending messages.
+Shared memory, such as the kernel space, is also considered a inter-process communication mechanism, but the abbreviation IPC usually refers to "message passing" only. 
+https://media.geeksforgeeks.org/wp-content/uploads/1-76.png
+
+The message passing part of IPC is especially important, when talking about microkernels. 
+IPC is the mechanism that allows the system to be built from a number of smaller programs called servers, which are used by other programs on the system, invoked via IPC. 
+Usually most or even all support for peripheral devices is provided this way - with servers for device drivers, network protocol stacks, file systems etc.
+
+There are two types of IPC: synchronous and asynchronous. Asynchronous IPC is comparable to network communication: The sender dispatches a message and continues working as normal. The receiver checks for the messages, or is alerted by some mechanism.
+For asynchronous IPC to function, it requires that the kernel maintain buffers and queues messages. The kernel is additionally responsible for dealing with buffer overflows and to copy messages(first copy from sender to kernel buffer, second from kernel buffer to receiver)
+In synchronous IPC, the first party(sender or receiver) blocks/waits until the other party is ready to perform the IPC. It requires neither buffering nor copying of messages. 
+While the following diagram was created in the context of asynchronous/synchronous programming, the same logic applies here:
+https://refine.ams3.cdn.digitaloceanspaces.com/blog/2024-02-16-async-vs-sync/diagram.png
+
+The advantage of synchronous IPC lies in its lower overhead, since it avoids buffering and extra message copies, whereas asynchronous IPC is more efficient in practice, as the sender can continue execution without waiting for the receiver.
+
 
 #### Layers
 
