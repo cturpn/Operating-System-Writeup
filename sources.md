@@ -1,12 +1,22 @@
 # Sources
 
 ## Sources guide/architecture/linux-architecture
+https://www.geeksforgeeks.org/operating-systems/what-is-an-operating-system/
 https://www.geeksforgeeks.org/linux-unix/architecture-of-linux-operating-system/
 https://www.naukri.com/code360/library/layered-structure-of-operating-system
 https://en.wikipedia.org/wiki/Kernel_(operating_system)
 https://linuxiac.com/nvidia-vs-amd-gpus-on-linux/
 https://en.wikipedia.org/wiki/Operating_system
 https://en.wikipedia.org/wiki/Shell_(computing)
+https://www.i.u-tokyo.ac.jp/edu/training/ss/lecture/new-documents/Lectures/17-Win32K/Win32K.pdf
+https://labex.io/questions/what-are-linux-system-utilities-219194
+https://en.wikipedia.org/wiki/Client/Server_Runtime_Subsystem
+https://en.wikipedia.org/wiki/Window_manager
+https://bbs.archlinux.org/viewtopic.php?id=292729
+https://www.reddit.com/r/linux4noobs/comments/ijmzoa/whats_the_difference_between_the_display_manager/
+https://en.wikipedia.org/wiki/Microsoft_Windows_library_files
+https://en.wikipedia.org/wiki/Glibc
+https://reactos.org/wiki/Win32k.sys
 
 ## Sources guide/architecture/components/*
 --> Incl. linux-architecture sources

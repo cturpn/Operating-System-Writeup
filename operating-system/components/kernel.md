@@ -2,7 +2,7 @@
 
 The kernel is the fundamental component of any operating system.  
 As this core part of the OS' it always has the complete control over everything in the system.
-It manages communication between hardware and software, providing controlled access to system resources such as CPU, memory, and I/O devices.
+The extend of the kernels tasks is very dependent on the type of kernel and the developers decisions, but in general it manages communication between hardware and software, providing controlled access to system resources such as CPU, memory, and I/O devices. 
 
 Different operating systems implement different types of kernels.  
 This documentation focuses primarily on the monolithic kernel(used by Linux), but many concepts also apply to other types, such as the hybrid kernel(used by Windows NT).
@@ -49,7 +49,7 @@ These are arranged in a logical order, starting with the most fundamental operat
 
 ### Microkernel
 The microkernel is a type of kernel that contains only the bare minimum of system services in its kernel space. 
-The goal of the microkernel is, to provide a core system that ensures vital functionalities and keep all non-vital components as modular as possible.
+The goal of the microkernel is, to provide a core system that ensures vital functionalities and keep all non-vital components as modular as possible. While it still offers a similar virtual interface to the hardware
 Therefore only the most important system services make it into the kernel space, such as the inter-process communication(IPC), memory management and CPU-scheduling. This can vary depending on the type of system.
 All non-critical services are installed in the user space as isolated processes called "servers". This approach allows the user to directly interact with them and install, update or replace indiviual services without affecting the entire system.
  
@@ -113,7 +113,7 @@ This is due to the reduced amount of abstractions forced onto the applications a
 
 
 ## User Mode vs Kernel Mode
-To fully understand the aforementioned advantages and disadvantages of the different kernel types it is important to know the two key states in a operating system. 
+To fully understand the aforementioned advantages and disadvantages of the different kernel types, it is important to know the two key states in a operating system. 
 These two states, or also user mode and kernel mode have very different usecases due to how they affect security, stability and performance.
 In short: the user mode is a restricted mode that limits access to system resources, while kernel mode is a privileged mode that allows direct access to system resources.
 Here a quick comparison between the two states
@@ -181,12 +181,15 @@ While the kernel mode is intended to be temporary and controlled; vulnerabilitie
 
 
 ## System Calls and Mode Transition
-
+System calls are the way any user space program request the execution of priviledged operations(Like writing data on the disk). 
+This is done via the system call interface, and in most cases a additional library(such as gclib)
 
 
 ## Resource Management
 
-## Memory Allocation / Management
+## Memory Management
+
+## I/O Devices
 
 ## Inter-Process Communication(IPC)
 Inter-process communication, from now on IPC describes a mechanism that allows seperate processes to communicate with each other by sending messages.
