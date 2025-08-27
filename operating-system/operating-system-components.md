@@ -15,7 +15,7 @@ Take the examples with a grain of salt - its to help visualize how important eac
  - Kernel
  - Shell
 
-While minimal and inconvenient, the system can boot and run with just these components. You could run shell built in commands, but thats really it.
+While minimal and inconvenient, the system can boot and run with just these components. You could run shell built in commands, but even this is not guaranteed, as most modern shells still rely on libraries to execute them.
 
 ### Optional, but important components are:
  - System libraries

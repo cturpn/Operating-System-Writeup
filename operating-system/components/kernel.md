@@ -134,23 +134,24 @@ https://www.techgeekbuzz.com/media/post_images/uploads/2021/10/How-the-Kernel-Ar
 A x86 processor supports 4 privilege rings, numbered from 0-3. Typically only 2-3 are actually used; user mode, kernel mode and if present the hypervisor.
 Kernel is placed on privilege ring 0, user on 3. The hypervisor' placement depends on the CPU, if it supports x86 virtualization its on 0(it allows the guest os to run on it, without affecting other guests and the host), otherwise on 1 
 
-### User Mode
+### User Mode / User Space
 User mode is an OS state with restricted access to system resources and hardware. 
 It is less privileged than kernel mode and cannot execute operations that could compromise system stability or security.
+The term "user space" refers to the reserved area of system memory, where non-kernel programs run. Programs in user space are executed with user mode privileges.
 
-When an application starts in user mode, the kernel creates an isolated process with its own virtual address space (VAS). 
+When an application starts in user mode, the kernel creates an isolated process with its own virtual address space (VAS) in the user space. 
 This ensures the process can only access its allocated memory and cannot interfere with other user-mode processes. 
 The kernel retains full access to every process’s memory, but under normal circumstances it will not modify it directly.
 
 This separation ensures stability and security: if a process crashes, the failure is contained within that process and does not impact the rest of the system. 
-When a process needs to perform privileged operations (e.g., access hardware or perform I/O), it must invoke a system call via the system call interface (SCI). 
+When a process needs to perform privileged operations (e.g., access hardware or perform I/O), it must invoke a system call via the system call interface. 
 The kernel then temporarily elevates execution to kernel mode, performs the task safely, and returns control to user mode.
 
 #### Advantages
 - Containing crashes to the application, as the process is isolated from others
 - Applications cannot read or write other processes memory
 - No direct access to system resources to block unauthorizes use
-- System calls need to be issued to execute priviledged operations, further enhancing security measures
+- System calls need to be issued to execute privileged operations, further enhancing security measures
 
 #### Disadvantages
 - Mode switching is time-consuming and resource-intensive
@@ -158,11 +159,13 @@ The kernel then temporarily elevates execution to kernel mode, performs the task
 - Application depends on the kernel to perform essential functions
 
 
-### Kernel Mode
+### Kernel Mode / Kernel Space
 Kernel mode is the privileged and unrestricted mode. It has direct access to hardware, including CPU, memory, and I/O devices.
-In the kernel mode memory isolation does not exist - all processes run in the same memory space. This can cause 
+In the kernel mode memory isolation does not exist - all processes run in the same memory space. This can cause problems in case of a service failing, as it will affect the entire system.
+For this reason and additional security concerns, exclusively OS relevant programs and services run in the kernel mode.
+Kernel space is the kernel equivalent of the user space, referring to the area of system memory, where all the kernel programs run. Logically, programs in kernel space are executed with kernel mode privileges.
 
-A user-space application can only enter kernel mode via a system call. System calls are validated and authorized by the kernel’s system call interface (SCI), and they exclusively allow the execution of the requested operation. 
+A user-space application can only temporarily enter kernel mode via a system call. System calls are validated and authorized by the kernels system call interface, and they exclusively allow the execution of the requested operation. 
 Even though kernel mode itself has unrestricted access, this mechanism ensures that arbitrary or malicious code from user-space cannot be executed directly in kernel mode.
 Once a system call is validated, the kernel temporarily switches the CPU to kernel mode to execute the requested operation. 
 After the operation completes, control always returns to user mode. Only once back in user mode, new system calls can be issued
@@ -181,9 +184,46 @@ While the kernel mode is intended to be temporary and controlled; vulnerabilitie
 
 
 ## System Calls and Mode Transition
-System calls are the way any user space program request the execution of priviledged operations(Like writing data on the disk). 
-This is done via the system call interface, and in most cases a additional library(such as gclib)
+System calls are the mechanism by which a user space program requests actions from the kernel. They are a way for software to temporarely switch to privilege ring 0 and execute operations, they are otherwise cant(such as memory management or process control).
+There are a lot of system calls for different tasks and operations. Each one is restricted to its own task, only allowing specific arguments and parameters. 
 
+
+Simplified a system call looks like this:
+ - User program calls fwrite() → library wrapper in user space prepares args and number.
+ - Library executes write() syscall instruction
+ - System call interface:
+    - Validates args
+    - Translates write() to sys_write() 
+    - Transfers to entry point for kernel mode execution
+ - System call dispatcher
+    - Looks up the handler in sys_call_table
+    - Calls sys_write() (the handler)
+ - Handler executes - performs write
+ - Return value is sent back through the components
+
+
+### What are they exactly?
+System calls are located in the kernel itself, more specifically in a table called "system call table" and are identified by numbers.
+This system call table is, during runtime, loaded from the respective source file into RAM and used by the system call dispatcher to resolve system call numbers. 
+Looks like this:
+https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/syscalls/syscall_64.tbl
+
+These system calls are special instructions known to the kernel. They are entry points into the kernel and are also executed there. 
+System calls are not functions, but architecture and kernel specific assembly instructions. Their tasks are:
+ - setup information to identify the system call and its paramenter
+ - trigger a kernel mode switch
+ - retrieve the result of the system call 
+ - return the process to user mode
+
+
+While system calls can directly be called This is done for multiple reasons; 
+ - It makes it easier for developer to communicate with the kernel and request operations, by providing an interface with unified requests
+ - It allows for more efficient programming, because the predefined functions can be calles as system call instead of adding it as code in the application
+ - System calls need to be fast, really fast and utilizing libraries is faster
+
+If you are interested in a more indepth documentation, please refer to:
+https://0xax.gitbooks.io/linux-insides/content/
+This documentation was invaluable for my writeup!
 
 ## Resource Management
 

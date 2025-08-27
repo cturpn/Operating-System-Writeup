@@ -40,6 +40,8 @@ https://refine.dev/blog/synchronous-vs-asynchronous/#example-ajax-requests-in-we
 https://en.wikipedia.org/wiki/Hybrid_kernel
 https://www.devx.com/terms/hybrid-kernel/
 https://nordvpn.com/cybersecurity/glossary/nano-kernel
+https://www.baeldung.com/linux/system-calls-vs-library-calls
+https://linux-kernel-labs.github.io/refs/heads/master/lectures/syscalls.html
 
 ## Sources Unix
 https://www.geeksforgeeks.org/linux-unix/linux-vs-unix/
