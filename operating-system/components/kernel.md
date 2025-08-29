@@ -183,43 +183,52 @@ While the kernel mode is intended to be temporary and controlled; vulnerabilitie
  - Developing on this level is requires in-depth knowledge and does not allow for mistakes
 
 
-## System Calls and Mode Transition
+## System Calls
 System calls are the mechanism by which a user space program requests actions from the kernel. They are a way for software to temporarely switch to privilege ring 0 and execute operations, they are otherwise cant(such as memory management or process control).
 There are a lot of system calls for different tasks and operations. Each one is restricted to its own task, only allowing specific arguments and parameters. 
+https://media.geeksforgeeks.org/wp-content/uploads/20231017212555/Types-of-System-Calls-(3)-(2).png
 
-
-Simplified a system call looks like this:
- - User program calls fwrite() → library wrapper in user space prepares args and number.
- - Library executes write() syscall instruction
- - System call interface:
-    - Validates args
-    - Translates write() to sys_write() 
-    - Transfers to entry point for kernel mode execution
- - System call dispatcher
-    - Looks up the handler in sys_call_table
-    - Calls sys_write() (the handler)
- - Handler executes - performs write
- - Return value is sent back through the components
-
-
-### What are they exactly?
-System calls are located in the kernel itself, more specifically in a table called "system call table" and are identified by numbers.
-This system call table is, during runtime, loaded from the respective source file into RAM and used by the system call dispatcher to resolve system call numbers. 
-Looks like this:
-https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/syscalls/syscall_64.tbl
-
-These system calls are special instructions known to the kernel. They are entry points into the kernel and are also executed there. 
-System calls are not functions, but architecture and kernel specific assembly instructions. Their tasks are:
+These system calls are invoked by a special instruction "syscall" known to the kernel. Which system call a program wants to invoke, is defined by a argument (the system calls number) in the syscall instruction. This instruction is the entry point into the kernel and is also executed there. 
+System calls are not functions, but architecture and kernel specific assembly instructions. 
+Their tasks are:
  - setup information to identify the system call and its paramenter
  - trigger a kernel mode switch
  - retrieve the result of the system call 
  - return the process to user mode
 
+System calls are located in the kernel itself, more specifically in their respective file. Additionally there is a table called "system call table", this is used to correlate numbers to a specific identified by numbers.
+During runtime, the system call table resides in the kernel memory and is used by the system call dispatcher to resolve system call numbers. 
+The system calls numbers are made available to programs running in user space via the system call interface. 
+Looks like this:
+https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/syscalls/syscall_64.tbl
 
-While system calls can directly be called This is done for multiple reasons; 
+While system calls can be invoked directly, it is rarely done. Usually system libraries are used to call the system calls (also called library call). This is because of the following reasons:
  - It makes it easier for developer to communicate with the kernel and request operations, by providing an interface with unified requests
- - It allows for more efficient programming, because the predefined functions can be calles as system call instead of adding it as code in the application
- - System calls need to be fast, really fast and utilizing libraries is faster
+ - It indirectly reduces the work, the kernel has to do, because the functions already validates the args before making a system call 
+
+A somewhat simplified write system call would look like this:
+ - User program calls a function fwrite() → library wrapper in user space prepares args and number
+ - Library executes fwrite(), a function that calls the generic syscall instruction.
+    - Executes the syscall instruction, which signals the CPU core to switch to kernel mode
+    - Supplies system call number(in our case 1 for write), arguments and parameters and pre-validates them
+ - CPU acts
+    - Switches mode to kernel by moving stack pointer of acting core to kernel memory
+    - Saves process state needed to return after the system call
+ - System call dispatcher
+    - Validates arguments
+    - Translates system call number to sys_write() (or whatever is assigned to provided number) with the help of the sys_call_table
+    - Calls sys_write() (the handler)
+ - Handler executes - performs write
+ - Return to user space
+    - Takes return value from handler
+    - Restores saved process state
+    - CPU core switches back to user mode and resumes execution
+
+A few takeaways regarding my example: 
+ - When talking about mode switching, it is always a single core, not the entire CPU. 
+ - A program always returns to user mode after execution. There are no exceptions to this.
+ - System calls are only executed AFTER their arguments are validated. This is done to ensure security and block malicious actions.
+ - Libraries are not necessary, but required by most modern programs.
 
 If you are interested in a more indepth documentation, please refer to:
 https://0xax.gitbooks.io/linux-insides/content/
@@ -227,7 +236,9 @@ This documentation was invaluable for my writeup!
 
 ## Resource Management
 
-## Memory Management
+### Memory Management
+
+
 
 ## I/O Devices
 

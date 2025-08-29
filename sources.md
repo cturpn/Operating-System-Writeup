@@ -42,6 +42,10 @@ https://www.devx.com/terms/hybrid-kernel/
 https://nordvpn.com/cybersecurity/glossary/nano-kernel
 https://www.baeldung.com/linux/system-calls-vs-library-calls
 https://linux-kernel-labs.github.io/refs/heads/master/lectures/syscalls.html
+https://0xax.gitbooks.io/linux-insides/content/SysCall/linux-syscall-1.html
+https://w3.cs.jmu.edu/kirkpams/OpenCSF/Books/csf/html/Syscall.html
+https://stackoverflow.com/questions/2479118/cpu-switches-from-user-mode-to-kernel-mode-what-exactly-does-it-do-how-does-i
+https://www.kernel.org/doc/html/next/x86/kernel-stacks.html
 
 ## Sources Unix
 https://www.geeksforgeeks.org/linux-unix/linux-vs-unix/
