@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 # Linux Architectuce & How to rice / rice components Writeup
 A extensive wall of text regarding the architecture of unix/linux and the components of ricing
 Includes my sources(in the sources.md file), additional links and resources. 
+=======
+Linux Architectuce & How to rice / rice components Writeup
+>>>>>>> f1347c2 (daily update)
 
+A extensive wall of text regarding the architecture of unix/linux and the components of ricing Includes my sources(in the sources.md file), additional links and resources.
+Why am i doing this ?
 
+<<<<<<< HEAD
 ## Why am i doing this ?
 Due to career path and win10 EOL i chose to switch to linux. I started with "ricing" my arch near instantly and faced a lot of challenges.
 While the individual Wm wikis are helpful i was missing some kind of general overview regarding the components and how they communicate with each other. 
@@ -11,7 +18,11 @@ This is far from done and will see many changes in the comming weeks.
 
 Please, if you see any mistakes or misinformation dont hesitate to let me know.
 
+=======
+Due to career path and win10 EOL i chose to switch to linux. I started with "ricing" my arch near instantly and faced a lot of challenges. While the individual Wm wikis are helpful i was missing some kind of general overview regarding the components and how they communicate with each other. I personally dislike it, when i dont fully understand something. Therefore i extended the documentation past the "limits" of ricing, towards the general linux architecture. This is far from done and will see many changes in the comming weeks.
+>>>>>>> f1347c2 (daily update)
 
+Please, if you see any mistakes or misinformation dont hesitate to let me know.
 <!-- 
 Author: cturpn
 File: README.md
