@@ -46,6 +46,9 @@ https://0xax.gitbooks.io/linux-insides/content/SysCall/linux-syscall-1.html
 https://w3.cs.jmu.edu/kirkpams/OpenCSF/Books/csf/html/Syscall.html
 https://stackoverflow.com/questions/2479118/cpu-switches-from-user-mode-to-kernel-mode-what-exactly-does-it-do-how-does-i
 https://www.kernel.org/doc/html/next/x86/kernel-stacks.html
+https://docs.kernel.org/admin-guide/mm/concepts.html
+https://en.wikipedia.org/wiki/Memory_management_(operating_systems)
+
 
 ## Sources Unix
 https://www.geeksforgeeks.org/linux-unix/linux-vs-unix/

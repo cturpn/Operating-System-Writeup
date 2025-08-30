@@ -234,15 +234,41 @@ If you are interested in a more indepth documentation, please refer to:
 https://0xax.gitbooks.io/linux-insides/content/
 This documentation was invaluable for my writeup!
 
-## Resource Management
+## System Resource Management
 
-### Memory Management
+## Process Management
+
+
+## Memory Management / Memory Management Unit (MMU)
+This is the "part" of the kernel that manages all things memory. The memory management function keeps track of the status of each memory location - either free or allocated. 
+It decides which process gets how much memory, for how long it gets it and when it does. It allocates and deallocates memory to processes, makes sure access is secure and abstracts the complex nature of physical memory to something called virtual memory.
+But before tackling the virtual memory, we have to understand, how the physical system memory works.
+
+Physical memory in a computer is always a limited resource. The hardware component providing this memory is the RAM stick. 
+This physical memory is split into pages or frames. The size of pages/page frames is architecture specific. Usually the size is predefined, but some architectures allow selecton of the page size.
+But not just the size of these pages depends on the architecture, how the addresses are actually mapped do as well.
+The physical memory is not one big block of available memory space. It looks more like this:
+[0 - 640KB] usable
+[640KB - 1MB] reserved
+[1MB - 3GB] usable
+[3GB - 4GB] reserved
+[4GB - 16GB] usable
+
+This is due to reserved regions and the hardware layout (such as 4x a 16gb RAM stick). 
+
+All those given characteristics make the physical memory quite complex. Therefore the concept of virtual memory was created to avoid this complexity.
+Like already mentioned virtual memory is a abstraction of the physical memory to the programs. Each of these physical page frames can be mapped as one or multiple virtual pages. 
+These mappings are saved in a so called "page tables", which in turn allows for translation between virtual memory address and physical memory address.
+These page tables are organized hierachially within the system.
+With virtual memory being utilized, every memory access uses a virtual address instead of the physical one. 
+When a virtual address is being accessed, the MMU has to translate this virtual address to its corresponding physical address, because the CPU cant directly use the virtual one.
 
 
 
-## I/O Devices
+## Device Management
 
 ## Inter-Process Communication(IPC)
+The kernel is responsible to provide a way for processes to communicate between each other. This is done via IPC
 Inter-process communication, from now on IPC describes a mechanism that allows seperate processes to communicate with each other by sending messages.
 Shared memory, such as the kernel space, is also considered a inter-process communication mechanism, but the abbreviation IPC usually refers to "message passing" only. 
 https://media.geeksforgeeks.org/wp-content/uploads/1-76.png
