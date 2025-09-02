@@ -128,7 +128,7 @@ Here a quick comparison between the two states
 | Security and stability | Less critical for operations and less consequence for errors | Critical for system operations but larger consequence for errors |
 
 These two modes are implemented on processors using so called privilege rings (or protection rings)
-It looks like this: 
+It looks like this:
 https://www.techgeekbuzz.com/media/post_images/uploads/2021/10/How-the-Kernel-Architecture-is-related-to-Operating-System.png
 
 A x86 processor supports 4 privilege rings, numbered from 0-3. Typically only 2-3 are actually used; user mode, kernel mode and if present the hypervisor.
@@ -245,25 +245,45 @@ It decides which process gets how much memory, for how long it gets it and when 
 But before tackling the virtual memory, we have to understand, how the physical system memory works.
 
 Physical memory in a computer is always a limited resource. The hardware component providing this memory is the RAM stick. 
-This physical memory is split into pages or frames. The size of pages/page frames is architecture specific. Usually the size is predefined, but some architectures allow selecton of the page size.
+This physical memory is split into pages frames. The size of page frames is architecture specific. Usually the size is predefined (commonly 4KiB), but some architectures allow selecton of the page size.
 But not just the size of these pages depends on the architecture, how the addresses are actually mapped do as well.
-The physical memory is not one big block of available memory space. It looks more like this:
+The physical memory is not one big block of available memory space. It is fragmented into multiple blocks and looks more like this:
 [0 - 640KB] usable
 [640KB - 1MB] reserved
 [1MB - 3GB] usable
 [3GB - 4GB] reserved
 [4GB - 16GB] usable
 
-This is due to reserved regions and the hardware layout (such as 4x a 16gb RAM stick). 
+There are multiple reasons, why these reserved spaces exist such as firmware and I/O devices.
 
-All those given characteristics make the physical memory quite complex. Therefore the concept of virtual memory was created to avoid this complexity.
-Like already mentioned virtual memory is a abstraction of the physical memory to the programs. Each of these physical page frames can be mapped as one or multiple virtual pages. 
-These mappings are saved in a so called "page tables", which in turn allows for translation between virtual memory address and physical memory address.
-These page tables are organized hierachially within the system.
-With virtual memory being utilized, every memory access uses a virtual address instead of the physical one. 
-When a virtual address is being accessed, the MMU has to translate this virtual address to its corresponding physical address, because the CPU cant directly use the virtual one.
+All those given characteristics make the physical memory quite complex. It is common to reduce this complexity and introduce additional security measurements by utilizing different memory management techniques. 
+One of these techniques is virtual memory (also paged memory management), which is the most common one in modern OS.
+https://media.geeksforgeeks.org/wp-content/uploads/20250111161309142776/memory_management_techniques.webp
 
+Main benefits of implementing virtual memory include:
+ - Increased security due to process isolation
+ - Allow swapping to be used, temporarily mapping more memory than physical RAM, though this is optional and not necessary
+ - Hiding the memory fragmentation from programs, making development easier
+ - The ability to share memory between certain processes (e.g libraries)
 
+Like already mentioned, virtual memory is a abstraction of the physical memory to the programs. Each of these physical "page frames" can be mapped as one or multiple virtual "pages".
+These mappings are stored in a so called "page tables", which in turn allows for translation between virtual memory address and physical memory address.
+These page tables are organized hierachially within the system and contain the physical address, virtual address, access rights and a present bit (displays whether page is in RAM). Virtual memory also allows the creation of two seperated areas, one for the kernel space and one for the user space.
+
+When virtual memory is being utilized in a system, every program outside the kernel uses a virtual address instead of the physical one. 
+When a virtual address is being accessed, the memory management unit (MMU, special part of the CPU) translates this virtual address to its corresponding physical address.
+A kernel subsystem, often called the paging supervisor, manages page tables, handles page faults, and performs page replacement when needed.
+This abstraction simplifies memory access for programs; the CPU handles all the physical complexity.
+
+One of the drawbacks of virtual memory is that translating between the two addresses is quite resource and time intensive. Therefore, to reduce the amount of translations that have to be done, recently translated pages are cached in something called a translation lookaside buffer (TLB).
+
+A translation lookaside buffer (TLB) is a memory cache, storing recently translated pages in a table and has a fixed amount of slots for page table entries.
+Modern systems commonly have multiple TLB's; One faster and smaller and one slower, but bigger. 
+When translating a address, the MMU checks the TLB first and falls back to page tables if there are no related TLB entries. 
+
+Ive already mentioned process isolation in the benefits of virtual memory, but havent really explained why.
+This is essentially how the kernel space and user space are mapped and seperated, how the MMU / CPU can detect and block processes attempting to access memory outside their own VAS and how the MMU grants controlled access to shared resources.
+As you can see it is closely tied to the security and safety of the kernel. If it wasnt there, malware and malicious actors could access and write other processes memory or even the kernel space. Even just a bug in a software could corrupt the memory of another process.
 
 ## Device Management
 

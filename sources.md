@@ -48,7 +48,7 @@ https://stackoverflow.com/questions/2479118/cpu-switches-from-user-mode-to-kerne
 https://www.kernel.org/doc/html/next/x86/kernel-stacks.html
 https://docs.kernel.org/admin-guide/mm/concepts.html
 https://en.wikipedia.org/wiki/Memory_management_(operating_systems)
-
+https://en.wikipedia.org/wiki/Virtual_memory
 
 ## Sources Unix
 https://www.geeksforgeeks.org/linux-unix/linux-vs-unix/
