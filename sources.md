@@ -1,6 +1,14 @@
 # Sources
 
-## Sources guide/architecture/linux-architecture
+## Sources operating-system-writeup/general/os-fundamentals
+https://en.wikipedia.org/wiki/Computer_program
+https://en.wikipedia.org/wiki/Process_(computing)
+https://en.wikipedia.org/wiki/Software
+https://en.wikipedia.org/wiki/Thread_(computing)
+https://en.wikipedia.org/wiki/File_descriptor
+https://www.geeksforgeeks.org/operating-systems/thread-in-operating-system/
+
+## Sources operating-system-writeup/operating-system/operating-system-components
 https://www.geeksforgeeks.org/operating-systems/what-is-an-operating-system/
 https://www.geeksforgeeks.org/linux-unix/architecture-of-linux-operating-system/
 https://www.naukri.com/code360/library/layered-structure-of-operating-system
@@ -49,13 +57,14 @@ https://www.kernel.org/doc/html/next/x86/kernel-stacks.html
 https://docs.kernel.org/admin-guide/mm/concepts.html
 https://en.wikipedia.org/wiki/Memory_management_(operating_systems)
 https://en.wikipedia.org/wiki/Virtual_memory
+https://en.wikipedia.org/wiki/Process_management_(computing)
 
 ## Sources Unix
 https://www.geeksforgeeks.org/linux-unix/linux-vs-unix/
 
 <!-- 
 Author: cturpn
-File: linux_architecture.md
+File: sources.md
 Purpose: Documentation of the basic linux architecture to further understand the different components
 Created: 2025-08-22
 Edited: 2025-08-22

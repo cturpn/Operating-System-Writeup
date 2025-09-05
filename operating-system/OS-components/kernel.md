@@ -239,6 +239,9 @@ This documentation was invaluable for my writeup!
 ## Process Management
 
 
+
+
+
 ## Memory Management / Memory Management Unit (MMU)
 This is the "part" of the kernel that manages all things memory. The memory management function keeps track of the status of each memory location - either free or allocated. 
 It decides which process gets how much memory, for how long it gets it and when it does. It allocates and deallocates memory to processes, makes sure access is secure and abstracts the complex nature of physical memory to something called virtual memory.
