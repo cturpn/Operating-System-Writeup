@@ -237,7 +237,41 @@ This documentation was invaluable for my writeup!
 ## System Resource Management
 
 ## Process Management
+A process is a running instance of a program. The OS must allocate resources to processes and enable them to share and exchange information, while protecting the allocated resources from other processes. Additionally, the OS is responsible for secure synchronization among processes.
+The OS maintains a data structure for each process, describing its state, ownership, assigned resources and scheduling priority. This data structure is also known as the process control block (PCB). 
+This data structure is the heart of process management. 
+Process management is responsible for:
+ - Creation & termination of processes
+ - Scheduling, prioritizing & CPU allocation
+ - Context switching
+ - Resource tracking
+ - Inter Process communication - explained in a seperate part, as it is quite a big topic
 
+
+### Multiprogramming / Multitasking 
+Most modern operating systems support multiprogramming. At any given point in time, a single CPU core can only execute instructions from one process/thread, but several of them over a period of time by assigning each process or thread to the processor at intervals. The other processes temporarily become inactive(state waiting or ready). 
+The execution of multiple processes/threads over a period of time is known as concurrent execution. 
+Multiprogramming is defined as "keeping several jobs in memory so the CPU always has one to execute". in practice, the term is often used interchangeably with concurrent execution, although strictly speaking, multiprogramming focuses on maximizing CPU utilization, while concurrent execution refers to the interval execution of multiple processes/threads.
+
+A multiprogramming OS supports concurrent execution and therefore allows for many processes/threads to be executed concurrently. This requires the kernel (the part responsible for process management) to allocate and deallocate CPU cores at an appropriate moment. 
+If the CPU core has to be de-allocated during execution of a process, it must be done in a way, that allows it to resume efficiently later on. 
+
+There are two ways for the OS to gain control of the CPU core during a process execution: 
+ - A system call, by the process currently being executed
+ - A hardware interrupt, such as keyboard or mouse interrupts (e.g., Alt+F4)
+
+The stopping, starting and restarting of another process is called a context switch (or context change). These switches usually happen, depending on scheduler and system load, every 1-4ms, so up to a 1000 times a second. 
+
+### Process Scheduler & Dispatcher
+The scheduler is essential for scheduling the processes CPU time according to priority and importance and ensuring, that the CPU time is spilt appropriately. Additionally, the scheduler provides security measures regarding malicious acts such as CPU DoS, by setting maximum time slots for processes. 
+
+There are 2 types of scheduler, these types are as follows: 
+ - Long term or job schedule
+ - Short term or CPU scheduler
+
+There are different types of scheduling as well:
+ - Non-preemptive
+ - Preemptive
 
 
 
@@ -248,7 +282,7 @@ It decides which process gets how much memory, for how long it gets it and when 
 But before tackling the virtual memory, we have to understand, how the physical system memory works.
 
 Physical memory in a computer is always a limited resource. The hardware component providing this memory is the RAM stick. 
-This physical memory is split into pages frames. The size of page frames is architecture specific. Usually the size is predefined (commonly 4KiB), but some architectures allow selecton of the page size.
+This physical memory is split into pages frames. The size of page frames is architecture specific. Usually the size is predefined (commonly 4KiB), but some architectures allow selection of the page size.
 But not just the size of these pages depends on the architecture, how the addresses are actually mapped do as well.
 The physical memory is not one big block of available memory space. It is fragmented into multiple blocks and looks more like this:
 [0 - 640KB] usable

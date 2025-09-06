@@ -7,6 +7,8 @@ https://en.wikipedia.org/wiki/Software
 https://en.wikipedia.org/wiki/Thread_(computing)
 https://en.wikipedia.org/wiki/File_descriptor
 https://www.geeksforgeeks.org/operating-systems/thread-in-operating-system/
+https://www.geeksforgeeks.org/c/memory-layout-of-c-program/
+https://en.wikipedia.org/wiki/Process_management_(computing)
 
 ## Sources operating-system-writeup/operating-system/operating-system-components
 https://www.geeksforgeeks.org/operating-systems/what-is-an-operating-system/
@@ -55,9 +57,9 @@ https://w3.cs.jmu.edu/kirkpams/OpenCSF/Books/csf/html/Syscall.html
 https://stackoverflow.com/questions/2479118/cpu-switches-from-user-mode-to-kernel-mode-what-exactly-does-it-do-how-does-i
 https://www.kernel.org/doc/html/next/x86/kernel-stacks.html
 https://docs.kernel.org/admin-guide/mm/concepts.html
-https://en.wikipedia.org/wiki/Memory_management_(operating_systems)
 https://en.wikipedia.org/wiki/Virtual_memory
 https://en.wikipedia.org/wiki/Process_management_(computing)
+https://www.geeksforgeeks.org/operating-systems/process-schedulers-in-operating-system/
 
 ## Sources Unix
 https://www.geeksforgeeks.org/linux-unix/linux-vs-unix/

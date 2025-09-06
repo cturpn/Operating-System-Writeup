@@ -34,7 +34,7 @@ A process usually consists of the following resources:
  - Security attributes – such as owner, permissions, and access controls
 
 ### Thread
-Threads are single sequence streams of instructions within a process. A thread always belongs to exactly 1 process. 
+Threads are single sequence streams of instructions within a process. A thread always belongs to exactly 1 process. It can also be viewed as a sub-process; a seperate independent sequence of execution within the code of one process.
 In an operating system that supports multithreading (which is very common nowadays), a process can consist of many threads.
 Threads of the same process share the process’s address space and resources, but each thread keeps its own execution context (registers, stack, thread-local data).
 
@@ -42,6 +42,18 @@ Visualization of such:
 https://media.geeksforgeeks.org/wp-content/uploads/18446744073709551615/multithreading-in-os.png
 
 Multithreading allows for threads to run concurrently, which leads to increased responsiveness and performance. This is due to the fact, that multiple things can happen at the same time (such as saving and accepting further user input for example)
+
+
+### File Descriptors / Handles
+File descriptors are is a process-unique identifier for a file or other I/O resources. 
+It indexes non-negative integers into a per-process file descriptor table. 
+The process specific table then writes this into a a system wide table of files opened by all processes - this is called the file table.
+The file table records the mode (read, write, appending and so on) and indexes in a third table called the inode table, which in turn describes the actual underlaying files.
+https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/File_table_and_inode_table.svg/330px-File_table_and_inode_table.svg.png
+
+File descriptors are part of the POSIX API. Each process should have three standard POSIX file descriptors, corresponding to the three standart streams(stdin,stdout and stderr).
+
+Handles are the windows version of file descriptors and might differ in actual execution and stream, but basically do the same.
 
 ## Memory Basics
 ### Process Memory Layout
