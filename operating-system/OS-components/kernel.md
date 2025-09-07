@@ -238,7 +238,15 @@ This documentation was invaluable for my writeup!
 
 ## Process Management
 A process is a running instance of a program. The OS must allocate resources to processes and enable them to share and exchange information, while protecting the allocated resources from other processes. Additionally, the OS is responsible for secure synchronization among processes.
-The OS maintains a data structure for each process, describing its state, ownership, assigned resources and scheduling priority. This data structure is also known as the process control block (PCB). 
+The OS maintains a data structure called the process control block(PCB) for each process, containing:
+ - its state 
+ - ownership 
+ - assigned resources
+ - scheduling priority
+ - Parent process pointer
+ - Process ID (PID)
+ - Privileges
+
 This data structure is the heart of process management. 
 Process management is responsible for:
  - Creation & termination of processes
@@ -260,19 +268,55 @@ There are two ways for the OS to gain control of the CPU core during a process e
  - A system call, by the process currently being executed
  - A hardware interrupt, such as keyboard or mouse interrupts (e.g., Alt+F4)
 
-The stopping, starting and restarting of another process is called a context switch (or context change). These switches usually happen, depending on scheduler and system load, every 1-4ms, so up to a 1000 times a second. 
+The stopping, starting and restarting of another process is called a context switch (or context change). These switches usually happen(can vary depending on scheduler and system load) every 1-4ms, so up to a 1000 times a second. 
+
 
 ### Process Scheduler & Dispatcher
-The scheduler is essential for scheduling the processes CPU time according to priority and importance and ensuring, that the CPU time is spilt appropriately. Additionally, the scheduler provides security measures regarding malicious acts such as CPU DoS, by setting maximum time slots for processes. 
+Process scheduling is the act of removing and assigning processes from and to the CPU, as well as deciding the order in which processes are executed
+The scheduler is essential for scheduling the processes CPU time according to priority and importance and ensuring, that the CPU time is spilt appropriately. Additionally, the scheduler provides security measures against malicious acts such as CPU DoS, by providing maximum time slots for processes. 
 
-There are 2 types of scheduler, these types are as follows: 
- - Long term or job schedule
- - Short term or CPU scheduler
+There are 3 types of process schedulers, these types are as follows: 
+ - Long term or job scheduler - Job queue -> memory
+ - Medium term scheduler - ready -> suspended
+ - Short term or CPU scheduler - ready queue -> CPU via dispatcher
 
-There are different types of scheduling as well:
+The long term scheduler determines which processes get admitted to the system for processing. It selects processes from the job queue and loads them into memory for execution. The main objective of the long term scheduler is to provide a equal amount of I/O bound and CPU bound processes. It also controls the level of multiprogramming, ensuring, that the amount of processes being created is the same as the ones leaving.
+
+The medium term scheduler is part of swapping and therefore optional. Its job is to swap suspended / blocked processes to disk and it is responsible for managing the swapped processes.
+A process gets suspended when it requests a I/O operation, such as write(). This happens because the CPU is way faster than the I/O devices and doesnt wait for said operation. Therefore the process is moved to suspended / blocked and CPU executes a different process. If your system has enough RAM, this is not necessary, but on systems with low memory it can reduce the memory load and increase performance. 
+
+The short term scheduler(also CPU scheduler) is responsible for actually scheduling CPU time and enforcing kernel process management policies(such as max time slices for processes).
+It selects a process among the "ready for execution" processes and allocates CPU to it. Which one of the processes gets CPU time is defined by the scheduling algorithm and process priority. 
+
+The process scheduler has 2 types of scheduling:
  - Non-preemptive
+
  - Preemptive
 
+The dispatcher is directly connected to the short term scheduler and does the actual moving of processes decided by the scheduler. 
+Example: Short term scheduler selects process X for execution, the dispatcher then acts and moves it into CPU. Once the execution ends or the scheduler interrupts the execution for some reason, the dispatcher once again moves the process.
+### Process Queues
+
+Job Queue
+ - Definition: Contains all processes waiting to be admitted into main memory.
+ - Where processes come from: Newly created jobs (user programs, batch jobs, system services).
+ - Purpose: Ensures the system doesn’t overload memory — the long-term scheduler pulls processes from this queue.
+ - Example: Opening a terminal places the process in the job queue before it is loaded into RAM.
+
+Ready Queue
+ - Definition: Holds all processes in main memory that are ready to execute on the CPU.
+ - Purpose: Short-term scheduler picks processes from this queue to assign CPU time.
+ - Characteristics: 
+   - All processes here are waiting only for CPU availability.
+   - Can grow if CPU is busy or if many processes are in memory.
+
+Device / Block Queue
+ - Definition: Holds processes waiting for I/O operations (disk read/write, network, user input).
+ - Purpose: Ensures CPU doesn’t waste cycles on processes blocked by I/O.
+ - Example: A text editor waiting for disk save or a download waiting for network packets.
+
+
+### Context Switching
 
 
 

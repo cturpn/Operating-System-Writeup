@@ -9,6 +9,7 @@ https://en.wikipedia.org/wiki/File_descriptor
 https://www.geeksforgeeks.org/operating-systems/thread-in-operating-system/
 https://www.geeksforgeeks.org/c/memory-layout-of-c-program/
 https://en.wikipedia.org/wiki/Process_management_(computing)
+https://www.tutorialspoint.com/operating_system/os_processes.htm
 
 ## Sources operating-system-writeup/operating-system/operating-system-components
 https://www.geeksforgeeks.org/operating-systems/what-is-an-operating-system/
@@ -60,6 +61,10 @@ https://docs.kernel.org/admin-guide/mm/concepts.html
 https://en.wikipedia.org/wiki/Virtual_memory
 https://en.wikipedia.org/wiki/Process_management_(computing)
 https://www.geeksforgeeks.org/operating-systems/process-schedulers-in-operating-system/
+https://www.tutorialspoint.com/operating_system/os_processes.htm
+https://en.wikipedia.org/wiki/Job_queue
+https://www.tutorialspoint.com/operating_system/os_process_scheduling.htm
+
 
 ## Sources Unix
 https://www.geeksforgeeks.org/linux-unix/linux-vs-unix/
