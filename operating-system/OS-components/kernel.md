@@ -256,24 +256,24 @@ Process management is responsible for:
  - Inter Process communication - explained in a seperate part, as it is quite a big topic
 
 
-### Multiprogramming / Multitasking 
-Most modern operating systems support multiprogramming. At any given point in time, a single CPU core can only execute instructions from one process/thread, but several of them over a period of time by assigning each process or thread to the processor at intervals. The other processes temporarily become inactive(state waiting or ready). 
+### Multiprogramming 
+Most modern operating systems support multiprogramming(therefore ill focus on multiprogramming OS, unless mentioned). At any given point in time, a single CPU core can only execute instructions from one process/thread, but several of them over a period of time by assigning each process or thread to the processor at intervals. The other processes temporarily become inactive(state waiting or ready). 
 The execution of multiple processes/threads over a period of time is known as concurrent execution. 
-Multiprogramming is defined as "keeping several jobs in memory so the CPU always has one to execute". in practice, the term is often used interchangeably with concurrent execution, although strictly speaking, multiprogramming focuses on maximizing CPU utilization, while concurrent execution refers to the interval execution of multiple processes/threads.
+Multiprogramming is defined as "keeping several jobs in memory so the CPU always has one to execute". In practice, the term is often used interchangeably with concurrent execution, although strictly speaking, multiprogramming focuses on maximizing CPU utilization, while concurrent execution refers to the interval execution of multiple processes/threads.
 
 A multiprogramming OS supports concurrent execution and therefore allows for many processes/threads to be executed concurrently. This requires the kernel (the part responsible for process management) to allocate and deallocate CPU cores at an appropriate moment. 
 If the CPU core has to be de-allocated during execution of a process, it must be done in a way, that allows it to resume efficiently later on. 
-
-There are two ways for the OS to gain control of the CPU core during a process execution: 
+There are 3 ways for this to happen: 
  - A system call, by the process currently being executed
  - A hardware interrupt, such as keyboard or mouse interrupts (e.g., Alt+F4)
+ - A timer interrupt (preemption enforced by the scheduler)
 
-The stopping, starting and restarting of another process is called a context switch (or context change). These switches usually happen(can vary depending on scheduler and system load) every 1-4ms, so up to a 1000 times a second. 
-
+The stopping, starting and restarting of another process is called a context switch (or context change). 
+Typically, these switches happen every few ms, but can vary heavily by OS and workload.
 
 ### Process Scheduler & Dispatcher
 Process scheduling is the act of removing and assigning processes from and to the CPU, as well as deciding the order in which processes are executed
-The scheduler is essential for scheduling the processes CPU time according to priority and importance and ensuring, that the CPU time is spilt appropriately. Additionally, the scheduler provides security measures against malicious acts such as CPU DoS, by providing maximum time slots for processes. 
+The scheduler is essential for scheduling the processes CPU time according to priority and importance and ensuring, that the CPU time is spilt appropriately. Additionally, the scheduler provides security measures against malicious acts such as CPU DoS, by providing maximum time slices for processes. 
 
 There are 3 types of process schedulers, these types are as follows: 
  - Long term or job scheduler - Job queue -> memory
@@ -281,27 +281,36 @@ There are 3 types of process schedulers, these types are as follows:
  - Short term or CPU scheduler - ready queue -> CPU via dispatcher
 
 The long term scheduler determines which processes get admitted to the system for processing. It selects processes from the job queue and loads them into memory for execution. The main objective of the long term scheduler is to provide a equal amount of I/O bound and CPU bound processes. It also controls the level of multiprogramming, ensuring, that the amount of processes being created is the same as the ones leaving.
+This scheduler, just like the job queue is absent in most modern OS's and its tasks are handled by the short term scheduler or the memory management respectively.
 
 The medium term scheduler is part of swapping and therefore optional. Its job is to swap suspended / blocked processes to disk and it is responsible for managing the swapped processes.
-A process gets suspended when it requests a I/O operation, such as write(). This happens because the CPU is way faster than the I/O devices and doesnt wait for said operation. Therefore the process is moved to suspended / blocked and CPU executes a different process. If your system has enough RAM, this is not necessary, but on systems with low memory it can reduce the memory load and increase performance. 
+A process gets switched when it requests a I/O operation, such as write(). This happens because the CPU is way faster than the I/O devices and doesnt wait for said operation. Therefore the process is moved to suspended / blocked and CPU executes a different process. If your system has enough RAM, this is not necessary, but on systems with low memory it can reduce the memory load and increase performance. 
 
 The short term scheduler(also CPU scheduler) is responsible for actually scheduling CPU time and enforcing kernel process management policies(such as max time slices for processes).
 It selects a process among the "ready for execution" processes and allocates CPU to it. Which one of the processes gets CPU time is defined by the scheduling algorithm and process priority. 
 
 The process scheduler has 2 types of scheduling:
  - Non-preemptive
-
  - Preemptive
 
-The dispatcher is directly connected to the short term scheduler and does the actual moving of processes decided by the scheduler. 
+Preemptive scheduling means that processes currently being executed in CPU can be switched out for a different process before finishing its execution. When this happens, the preemptively switched process gets put back into the ready queue and waits there. This can be caused by priority rules or time sharing policies.
+
+The non-preemptive scheduling is the opposite. With this approach it is not possible to switch a process until it finishes execution. While this is simpler to implement, it is also quite easy to abuse by a malicious actor. Therefore it is rarely used in modern OS.
+
+
+The dispatcher is directly connected to the short term scheduler and does the actual moving of processes(called context switch) selected by the scheduler. It moves the finished or stopped process back to the correct location or queue, saves information from the process that is about to be executed and moves it to CPU
 Example: Short term scheduler selects process X for execution, the dispatcher then acts and moves it into CPU. Once the execution ends or the scheduler interrupts the execution for some reason, the dispatcher once again moves the process.
+
+
 ### Process Queues
+This list is not exhaustive, it contains the most important ones. 
 
 Job Queue
  - Definition: Contains all processes waiting to be admitted into main memory.
  - Where processes come from: Newly created jobs (user programs, batch jobs, system services).
  - Purpose: Ensures the system doesn’t overload memory — the long-term scheduler pulls processes from this queue.
  - Example: Opening a terminal places the process in the job queue before it is loaded into RAM.
+ - Rare in modern OS, as processes are created dynamically and directly admitted into the ready queue.
 
 Ready Queue
  - Definition: Holds all processes in main memory that are ready to execute on the CPU.
@@ -313,11 +322,24 @@ Ready Queue
 Device / Block Queue
  - Definition: Holds processes waiting for I/O operations (disk read/write, network, user input).
  - Purpose: Ensures CPU doesn’t waste cycles on processes blocked by I/O.
+ - Characteristics: There can be a device queue for each I/O device available.
  - Example: A text editor waiting for disk save or a download waiting for network packets.
 
 
 ### Context Switching
+A context switch is the action of saving a processes state and registers, stopping it from running and loading or reloading another one for execution. 
+The trigger fo a context switch can be 3 different things:
+ - The running process finishes execution 
+ - The running process or the system sends a interrupt or system call. 
+ - The system sends a interrupt to enforce preemtion policies
+    - Max time slice reached
+    - Higher priority process is ready
 
+See the following diagram:
+https://media.geeksforgeeks.org/wp-content/uploads/20250825182631440618/1223.webp
+
+Its exclusively this saving, stopping and starting/reloading of processes - The selection of processes is not part of it.
+Like previously mentioned, these switches happen every few ms. Linux usually single digit ms and windows mid double digits.
 
 
 ## Memory Management / Memory Management Unit (MMU)

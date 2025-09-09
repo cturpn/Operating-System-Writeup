@@ -64,6 +64,7 @@ https://www.geeksforgeeks.org/operating-systems/process-schedulers-in-operating-
 https://www.tutorialspoint.com/operating_system/os_processes.htm
 https://en.wikipedia.org/wiki/Job_queue
 https://www.tutorialspoint.com/operating_system/os_process_scheduling.htm
+https://www.geeksforgeeks.org/operating-systems/context-switch-in-operating-system/
 
 
 ## Sources Unix
