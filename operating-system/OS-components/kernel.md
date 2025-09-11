@@ -389,6 +389,77 @@ This is essentially how the kernel space and user space are mapped and seperated
 As you can see it is closely tied to the security and safety of the kernel. If it wasnt there, malware and malicious actors could access and write other processes memory or even the kernel space. Even just a bug in a software could corrupt the memory of another process.
 
 ## Device Management
+The process of operating, maintaining and abstracting physical devices so user programs can access them in a uniform way is called device management. There are usually many devices connected to a system. 
+To make these devices(mouse, keyboard, I/O devices etc.) available, the device management part of the kernel utilizes device specific drivers to connect with the devices.
+Then it provides a interface to the OS, that allows programs to communicate with the devices. The device management selects, schedules and controls the requested I/O operations and ensures that they are executed efficiently.
+
+
+### I/O Management
+The device drivers are what enables the kernel to talk to these devices and therefore allow it to provide a standardized api to the programs / processes. 
+It is how the abstraction is provided(just a example, dont take the commands as guaranteed):
+ - Programm wants to write on disk
+ - Kernels system call interface exposes "write()" to do that
+ - Programm sends write()
+ - Inside the kernel, write() is mapped to device-specific operations (e.g., 0x_syswrite() for a Samsung 990 Pro NVMe SSD)
+ - The kernel translates the request and sends the correct low-level command to the device. 
+The device management is responsible for providing the device specific translations, allocate and deallocate devices(to processes similarly to process management with CPU time), monitoring the status of connected devices and storing/tracking all devices. 
+
+Now that we know how they communicate, we need to look at the techniques the system utilizes to do this efficiently; Mainly buffering, caching and spooling
+
+I/O operations are tasks that need to be executed efficiently. One key technique to do that is buffering. Buffering is the process of storing data temporarily in a reserved area of memory(called buffer), which makes the data more accessible than retrieving it directly from the SSD or respective source. 
+
+A 
+
+### I/O Process scheduling
+The allocation/scheduling of I/O devices is done based on process priority and a so called disk scheduling alorithm. Though, devices aren’t allocated to processes directly; rather, individual operations are scheduled and executed. 
+Once an operation completes, the request is removed from the queue. Unlike CPU time, I/O operations typically run to completion without preemption. While this is being done, the actual process is paused/stopped as we discussed earlier.
+The tracking and storing is done by a component called I/O controller. 
+
+### Types of Devices
+There are multiple types of devices, that can be connected to a system at any point. Actually, there are two different angles, we can look at it; From a allocation and access perspective, aswell how it handles data.
+From the allocation and access perspective, we have:
+ - Dedicated devices - a printer for example
+ - Shared devices - e.g a HDD, SSD etc.
+ - Virtual devices - a virtual device-like interface, that is not actually bound to any hardware device such as vNICs or a virtual router
+
+Types based on how it handles data, we have the following:
+ - Input devices - such as mouse, keyboard(for the most part)
+ - Output devices - printers, headphones and such 
+ - Character devices - serial ports, terminals
+ - Block devices - HDD, SSD, USB etc.
+
+Note, that devices can fit to multiple types of either perspective, but usually at least one of each fits.
+Now lets go through them seperately:
+
+#### Allocation and Access Types
+
+Dedicated devices can only be used by a single process or user at a time. It does not support more than one process, therefore a operation needs to be finished before scheduling a new operation.
+In case of a printer this would mean, that the print job must first be executed before starting another one. 
+
+Shared devices are the opposite, they can be accessed by 2 or more processes concurrently. 
+A SSD for example, can be accessed by multiple processes at once. Its the I/O controllers job to ensure that conflicting operations(such as two processes writing same file) do not corrupt data and security policies are enforced.
+
+Virtual devices are, like previously mentioned virtual interfaces that are not bound to any hardware component. 
+While the examples from before are correct, it can be extended on:
+Virtual devices can be created to turn a dedicated device into a shared one. A common example for this would be the printer with its spooling program.
+By converting a dedicated device to a shared device we can create many virtual instances of the current device and can increase its efficiency.
+
+
+#### Data Handling Types
+
+I/O devices are hardware that enables communication between the computer and the external world. Done by either sending/receiving data to/from the user or other systems
+Input devices send inputs, commonly triggered by the user. Mouse, keyboard ect. all only send data to the system, while receiving none. There are some exceptions to this, for example modern programmable keyboards.
+
+Output devices receive inputs from the system. It then typically provides this to the external world in a human-readable format.
+Such devices are headphones, printers and so on.
+
+Character devices are devices that perform I/O operations as a continous stream of bytes, one character at a time. 
+Example of such would again be a keyboard or serial port. Every time you press a key, it directly sends this top the system, one event at a time.
+
+Block devices do the same as the character devices, but in blocks(chunk of data, with a fixed size). 
+This means I/O operations stay in RAM until they collectively reached a predefined size, or a timer forces it to flush. 
+A SSD for example works like this, it doesnt write every single change immediately, but in mentioned blocks.
+
 
 ## Inter-Process Communication(IPC)
 The kernel is responsible to provide a way for processes to communicate between each other. This is done via IPC

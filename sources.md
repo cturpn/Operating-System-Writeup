@@ -65,7 +65,8 @@ https://www.tutorialspoint.com/operating_system/os_processes.htm
 https://en.wikipedia.org/wiki/Job_queue
 https://www.tutorialspoint.com/operating_system/os_process_scheduling.htm
 https://www.geeksforgeeks.org/operating-systems/context-switch-in-operating-system/
-
+https://www.geeksforgeeks.org/operating-systems/device-management-in-operating-system/
+https://www.ccbp.in/blog/articles/device-management-in-operating-system
 
 ## Sources Unix
 https://www.geeksforgeeks.org/linux-unix/linux-vs-unix/
