@@ -1,6 +1,6 @@
 # Operating System Fundamentals
 
-## Software -> Thread Definitions
+## Software Basics
 ### Software
 Software or applications, especially larger ones, often consists of multiple programs or modules. This is to simplify programming, allows for easier collaboration and enables independent updates. 
 Theoretically this could look like this:
@@ -19,8 +19,6 @@ See this illustration for clarity:
 https://upload.wikimedia.org/wikipedia/commons/2/25/Concepts-_Program_vs._Process_vs._Thread.jpg
 
 ### Process
-Process
-
 A process is an instance of a computer program that is being executed by one or more threads. While a program is a set of instructions stored in a file, a process is the active execution of those instructions after being loaded into memory.
 
 Opening the same program multiple times typically creates multiple process instances, each with its own resources.
@@ -32,6 +30,9 @@ A process usually consists of the following resources:
  - OS descriptors – e.g., file descriptors on Unix or handles on Windows
  - Processor state – CPU registers, program counter, stack pointer, etc.
  - Security attributes – such as owner, permissions, and access controls
+
+#### Process States
+<--ToDo-->
 
 ### Thread
 Threads are single sequence streams of instructions within a process. A thread always belongs to exactly 1 process. It can also be viewed as a sub-process; a seperate independent sequence of execution within the code of one process.
