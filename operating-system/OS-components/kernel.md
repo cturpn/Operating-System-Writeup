@@ -139,7 +139,7 @@ It looks like this:
 https://www.techgeekbuzz.com/media/post_images/uploads/2021/10/How-the-Kernel-Architecture-is-related-to-Operating-System.png
 
 A x86 processor supports 4 privilege rings, numbered from 0-3. Typically only 2-3 are actually used; user mode, kernel mode and if present the hypervisor.
-Kernel is placed on privilege ring 0, user on 3. The hypervisor' placement depends on the CPU, if it supports x86 virtualization its on 0(it allows the guest os to run on it, without affecting other guests and the host), otherwise on 1.
+Kernel is placed on privilege ring 0, user on 3. The hypervisor' placement depends on the CPU, if it supports x86 virtualization its on 0(it allows the guest os to run on it, without affecting other guests and the host), otherwise on 1.
 
 #### User Mode / User Space
 User mode is an OS state with restricted access to system resources and hardware. 
@@ -397,9 +397,10 @@ There are multiple reasons, why these reserved spaces exist such as firmware and
 Physical memory, if utilized as is, would have some very impactful security flaws. One of them being, that processes would always see the entire address space, not just its own. This allows it malicious actors or bugs to bypass privilege rings, read and modify any part of memory and so on.  
 
 All those given characteristics make the physical memory quite complex. It is common to reduce this complexity and introduce additional security measurements by utilizing different memory management techniques. 
-One of these techniques is virtual memory (also paged memory management), which is the most common one in modern OS.
+One of these techniques is virtual memory (also paged memory management, or in some implementations segmented memory management with paging), which is the most common one in modern OS.
 https://media.geeksforgeeks.org/wp-content/uploads/20250111161309142776/memory_management_techniques.webp
-These techniques or rather the abstraction it provides, simplifies memory access for programs; the CPU handles all the physical complexity.
+While there are multiple other techniques, i will solely focus on virtual memory in this documentation.
+These techniques or rather the abstraction it provides, simplifies memory access for programs; the CPU handles all the physical complexity. 
 
 ### Virtual Memory 
 Main benefits of implementing virtual memory include:
@@ -421,16 +422,44 @@ Ive already mentioned process isolation in the benefits of virtual memory, but h
 This is essentially how the kernel space and user space are mapped and seperated, how the MMU / CPU can detect and block processes attempting to access memory outside their own VAS and how the MMU grants controlled access to shared resources.
 It is therefore, closely tied to the security and safety of the kernel. If it wasnt there, malware and malicious actors could access and write other processes memory or even the kernel space. Even just a bug in a software could corrupt the memory of another process.
 
-While it has many upsides, it also has downsides. One of the downsides is that translating between the two addresses is quite resource and time intensive. To circumvent this overhead, the system reduces the amount of translations that have to be done. This is done by caching recently translated pages in something called a translation lookaside buffer (TLB).
+While it has many upsides, it also has downsides. One of the downsides is that translating between the two addresses is quite resource and time intensive. To partially circumvent this overhead, the system reduces the amount of translations that have to be done. This is done by caching recently translated pages in something called a translation lookaside buffer (TLB).
 A translation lookaside buffer (TLB) is a memory cache, storing recently translated pages in a table and has a fixed amount of slots for page table entries.
 Modern systems commonly have multiple TLB's; One faster and smaller and one slower, but bigger. 
 When translating a address, the MMU checks the TLB first and falls back to page tables if there are no related TLB entries.
 
-### Memory Allocation Strategies
-<--ToDo-->
 
-### Swapping 
-<--ToDo-->
+### Linking and Loading
+<--ToDo-LowPrio-->
+
+### Memory Allocation Strategies
+This is the rule set, defining how memory is assigned to processes. Its goal is, to do so efficiently and avoid fragmentation. 
+There are multiple strategies: 
+ - First Fit: Allocates the first available partition large enough to hold the process.
+ - Best Fit: Allocates the smallest available partition that fits the process, reducing wasted space.
+ - Worst Fit: Allocates the largest available partition, leaving the largest remaining space.
+ - Next Fit: Similar to First Fit but starts searching for free memory from the point of the last allocation.
+
+### Memory Allocation Strategies
+Memory allocation strategies define how memory is assigned to processes efficiently while minimizing fragmentation. Common strategies include:  
+- First Fit: Allocates the first available block large enough to hold the process.  
+- Best Fit: Allocates the smallest available block that fits the process, reducing wasted space.  
+- Worst Fit: Allocates the largest available block, leaving the largest remaining space.  
+- Next Fit: Similar to First Fit but starts searching from the point of the last allocation.
+
+In paged memory management systems, these strategies are mostly irrelevant for the virtual address space (VAS) because each virtual page can map to any free physical page frame, eliminating external fragmentation.  
+However, physical memory allocation for page frames still uses these strategies within the kernel. When processes terminate, their pages are freed, and allocation strategies may be applied to assign physical pages to new processes efficiently.
+Thus, while the process sees a contiguous VAS, these strategies are relevant behind the scenes for managing physical memory.
+
+
+### Swapping
+Swapping is the process of moving a process between main memory (RAM) and secondary storage (HDD/SSD) to allow systems with limited RAM to run more programs concurrently.
+When RAM is fully utilized and a new process needs memory, the medium-term scheduler may select an inactive process to be swapped out to disk. 
+While swapped out, the process cannot execute. If it is needed again, it must first be swapped back into RAM. 
+
+The medium-term scheduler is responsible for tracking swapped processes and deciding which to swap in or out based on system needs.
+Its important to remember that swapping is only utilized when RAM is running low. 
+
+
 
 ## Device Management
 The process of operating, maintaining and abstracting physical devices so user programs can access them in a uniform way is called device management. There are usually many devices connected to a system. 
@@ -438,7 +467,13 @@ To make these devices(mouse, keyboard, I/O devices etc.) available, the device m
 Then it provides a interface to the OS, that allows programs to communicate with the devices. The device management selects, schedules and controls the requested I/O operations and ensures that they are executed efficiently.
 
 ### Device Drivers
-<--ToDo-->
+A driver is a device specific program, that enables the kernel to communicate with said device. Any device connected to your system, whether mouse or SSD, has their own specific operations it understands. The device driver is what allows for translation between the kernels system calls and the device specific operations.
+These drivers are loaded into and reside in the kernel space. They enable the device related system calls to function.
+While the system calls are a unified interface, their functions and translations are provided by different software components. Anything device related is provided by the device driver. 
+Developing such device drivers requires extensive knowledge about the device and the kernel it will be written for. This has multiple reasons; 
+ - They run in kernel space, therefore even minor bugs can cause fatal crashes  
+ - The developer needs to know the exact layout of the device, to provide proper translations and mappings
+ - If the driver has security flaws, it allows a malicious actor to exploit the entire system
 
 ### I/O Management
 The device drivers are what enables the kernel to talk to these devices and therefore allow it to provide a standardized api to the programs / processes. 
@@ -452,6 +487,8 @@ The device management is responsible for providing the device specific translati
 
 Now that we know how they communicate, we need to look at the techniques the system utilizes to do this efficiently; Mainly buffering, caching and spooling
 
+### Buffering, Caching and Spooling
+<--ToDo-->
 I/O operations are tasks that need to be executed efficiently. One key technique to do that is buffering. Buffering is the process of storing data temporarily in a reserved area of memory(called buffer), which makes the data more accessible than retrieving it directly from the SSD or respective source. 
 
 ### I/O Process scheduling
@@ -504,10 +541,9 @@ Block devices do the same as the character devices, but in blocks(chunk of data,
 This means I/O operations stay in RAM until they collectively reached a predefined size, or a timer forces it to flush. 
 A SSD for example works like this, it doesnt write every single change immediately, but in mentioned blocks.
 
-### Buffering, Caching and Spooling
-<--ToDo-->
 
 ### Interrupt handling
+<--ToDo-->
 
 ## File System Interface
 File System Interface (Kernel’s Role)
